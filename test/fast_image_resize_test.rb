@@ -1,26 +1,22 @@
-require 'rubygems'
+require 'test_helper'
 
-require 'test/unit'
+class FastImageResizeTest < Minitest::Test
 
-PathHere = File.dirname(__FILE__)
+  PathHere = File.dirname(__FILE__)
+  FixturePath = File.join(PathHere, "fixtures")
 
-require File.join(".", PathHere, "..", "lib", 'fastimage_resize')
+  GoodFixtures = {
+    "test.gif"=>[:gif, [17, 32]],
+    "test.jpg"=>[:jpeg, [882, 470]],
+    "test.png"=>[:png, [30, 20]]
+    }
 
-FixturePath = File.join(PathHere, "fixtures")
+  BadFixtures = [
+    "test.bmp",
+    "faulty.jpg",
+    "test.ico"
+  ]
 
-GoodFixtures = {
-  "test.gif"=>[:gif, [17, 32]],
-  "test.jpg"=>[:jpeg, [882, 470]],
-  "test.png"=>[:png, [30, 20]]
-  }
-
-BadFixtures = [
-  "test.bmp",
-  "faulty.jpg",
-  "test.ico"
-]
-
-class FastImageResizeTest < Test::Unit::TestCase
   def test_resize_image_types_from_files
     GoodFixtures.each do |fn, info|
       outfile = File.join(PathHere, "fixtures", "resized_" + fn)
@@ -57,7 +53,7 @@ class FastImageResizeTest < Test::Unit::TestCase
       FastImage.resize(File.join(FixturePath, fn), 20, 20, :outfile=>outfile)
     end
   end
-  
+
   def test_should_raise_for_faulty_files
     fn = BadFixtures[1]
     outfile = File.join(PathHere, "fixtures", "resized_" + fn)
@@ -65,7 +61,7 @@ class FastImageResizeTest < Test::Unit::TestCase
       FastImage.resize(File.join(FixturePath, fn), 20, 20, :outfile=>outfile)
     end
   end
-  
+
   def test_should_raise_for_ico_files
     fn = BadFixtures[2]
     outfile = File.join(PathHere, "fixtures", "resized_" + fn)
@@ -73,7 +69,7 @@ class FastImageResizeTest < Test::Unit::TestCase
       FastImage.resize(File.join(FixturePath, fn), 20, 20, :outfile=>outfile)
     end
   end
-  
+
   def test_should_resize_names_with_spaces
     outfile = File.join(PathHere, "fixtures", "resized_test with space.jpg")
     FastImage.resize(File.join(FixturePath, "test with space.jpg"), 10, 10, :outfile=>outfile)
@@ -93,7 +89,7 @@ class FastImageResizeTest < Test::Unit::TestCase
     assert size > 1500
     File.unlink outfile
   end
-  
+
   def test_output_tempfile_has_right_extension
     outfile = FastImage.resize(File.join(FixturePath, "test.jpg"), 200, 200)
     assert outfile.path =~ /\.jpg$/
