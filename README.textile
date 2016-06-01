@@ -1,5 +1,8 @@
 h1. FastImage Resize
 
+> This fork of the FastImage Resize Gem removes remote URL support to avoid a
+> whole class of security-related problems.
+
 h4. FastImage Resize is an extremely light solution for resizing images in ruby by using libgd
 
 FastImage Resize will resize gifs, jpegs, and png files.
