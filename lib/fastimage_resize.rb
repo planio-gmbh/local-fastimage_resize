@@ -4,30 +4,22 @@
 #
 #   require 'fastimage_resize'
 #
-#   FastImage.resize("http://stephensykes.com/images/ss.com_x.gif", 100, 20, :outfile=>"my.gif")
+#   FastImage.resize("image.gif", 100, 20, :outfile=>"thumbnail.gif")
 #   => 1
 #
 # === Requirements
 #
-# RubyInline
-#
-#   gem install RubyInline
-#
-# FastImage
-#
-#   gem install fastimage
-#
-# Libgd
+# RubyInline and FastImage (installed via RubyGems) and libgd
 #
 # See http://www.libgd.org/
-# Libgd is commonly available on most unix platforms, including OSX. 
+#
+# Libgd is commonly available on most unix platforms, including OSX.
 #
 # === References
 #
 # * http://blog.new-bamboo.co.uk/2007/12/3/super-f-simple-resizing
 
 require 'inline'
-require 'open-uri'
 require 'tempfile'
 require 'fastimage'
 
@@ -65,12 +57,7 @@ class FastImage
     if input.respond_to?(:read)
       file_in = read_to_local(input)
     else
-      if input =~ URI.regexp(['http','https','ftp'])
-        u = URI.parse(input)
-        file_in = read_to_local(open(u))
-      else
-        file_in = input.to_s
-      end
+      file_in = input.to_s
     end
 
     fast_image = new(file_in, :raise_on_failure=>true)
@@ -95,8 +82,8 @@ class FastImage
     end
 
     temp_file
-  rescue OpenURI::HTTPError, SocketError, URI::InvalidURIError, RuntimeError => e
-    raise ImageFetchFailure, e.class
+  rescue RuntimeError => e
+    raise ImageFetchFailure, e.message
   end
 
   private

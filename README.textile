@@ -28,7 +28,7 @@ h2. Examples
 <code>
   require 'fastimage_resize'
 
-  FastImage.resize("http://stephensykes.com/images/ss.com_x.gif", 100, 20, :outfile=>"my.gif")
+  FastImage.resize("example.gif", 100, 20, :outfile=>"my.gif")
   => nil
 
   outfile = FastImage.resize("nonexistentfile.png", 50, 50)
@@ -134,7 +134,7 @@ Because of the way that libgd works, gif files that have transparency may not al
 
 h2. Tests
 
-You'll need to 'gem install fakeweb' to be able to run the tests
+Run @ruby test/test.rb@ to execute the tests.
 
 h2. References
 
