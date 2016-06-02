@@ -23,63 +23,59 @@ require 'inline'
 require 'tempfile'
 require 'fastimage'
 
-class FastImage
+module FastImage::Resize
   SUPPORTED_FORMATS = [:jpeg, :png, :gif]
   FILE_EXTENSIONS = [:jpg, :png, :gif]  # prefer jpg to jpeg as an extension
 
-  class FormatNotSupported < FastImageException # :nodoc:
+  class FormatNotSupported < FastImage::FastImageException # :nodoc:
   end
-  
-  # Resizes an image, storing the result in a file given in file_out
-  #
-  # Input can be a filename, a uri, or an IO object.
-  #
-  # FastImage Resize can resize GIF, JPEG and PNG files.
-  #
-  # Giving a zero value for width or height causes the image to scale proportionately.
-  #
-  # === Example
-  #
-  #   require 'fastimage_resize'
-  #
-  #   FastImage.resize("http://stephensykes.com/images/ss.com_x.gif", 100, 20, :outfile=>"my.gif")
-  #
-  # === Supported options
-  # [:jpeg_quality]
-  #   A figure passed to libgd to determine quality of output jpeg (only useful if input is jpeg)
-  # [:outfile]
-  #   Name of a file to store the output in, in this case a temp file is not used
-  #
-  def self.resize(input, w, h, options={})
+
+  def self.included(base)
+    base.extend ClassMethods
+  end
+
+  module ClassMethods
+    # Resizes an image, storing the result in a file given in file_out
+    #
+    # Input can be a filename, a uri, or an IO object.
+    #
+    # FastImage Resize can resize GIF, JPEG and PNG files.
+    #
+    # Giving a zero value for width or height causes the image to scale proportionately.
+    #
+    # === Example
+    #
+    #   require 'fastimage_resize'
+    #
+    #   FastImage.resize("http://stephensykes.com/images/ss.com_x.gif", 100, 20, :outfile=>"my.gif")
+    #
+    # === Supported options
+    # [:jpeg_quality]
+    #   A figure passed to libgd to determine quality of output jpeg (only useful if input is jpeg)
+    # [:outfile]
+    #   Name of a file to store the output in, in this case a temp file is not used
+    #
+    def resize(source, width, height, options={})
+      new(source, :raise_on_failure => true).resize(width, height, options)
+    end
+  end
+
+  def resize(width, height, options = {})
     jpeg_quality = options[:jpeg_quality] || -1
     file_out = options[:outfile]
-    
-    if input.respond_to?(:read)
-      file_in = read_to_local(input)
-    else
-      file_in = input.to_s
-    end
 
-    fast_image = new(file_in, :raise_on_failure=>true)
-    type_index = SUPPORTED_FORMATS.index(fast_image.type)
+    type_index = SUPPORTED_FORMATS.index(type)
     raise FormatNotSupported unless type_index
 
     if !file_out
-      temp_file = Tempfile.new([name, ".#{FILE_EXTENSIONS[type_index]}"])
+      temp_file = Tempfile.new(["fastimage-resize-", ".#{FILE_EXTENSIONS[type_index]}"])
       temp_file.binmode
       file_out = temp_file.path
     else
       temp_file = nil
     end
 
-    in_path = file_in.respond_to?(:path) ? file_in.path : file_in
-
-    fast_image.resize_image(in_path, file_out.to_s, w.to_i, h.to_i, type_index, jpeg_quality.to_i)
-
-    if file_in.respond_to?(:close)
-      file_in.close
-      file_in.unlink
-    end
+    resize_image(path, file_out.to_s, width.to_i, height.to_i, type_index, jpeg_quality.to_i)
 
     temp_file
   rescue RuntimeError => e
@@ -88,22 +84,12 @@ class FastImage
 
   private
 
-  # returns readable tempfile
-  def self.read_to_local(readable)
-    temp = Tempfile.new(name)
-    temp.binmode
-    temp.write(readable.read)
-    temp.close
-    temp.open
-    temp
-  end
-
   def resize_image(filename_in, filename_out, w, h, image_type, jpeg_quality); end
-  
+
   inline do |builder|
     builder.include '"gd.h"'
     builder.add_link_flags "-lgd"
-    
+
     builder.c <<-"END"
       VALUE resize_image(char *filename_in, char *filename_out, int w, int h, int image_type, int jpeg_quality) {
         gdImagePtr im_in, im_out;
@@ -155,9 +141,9 @@ class FastImage
           gdImageAlphaBlending(im_out, 0);  /* handle transparency correctly */
           gdImageSaveAlpha(im_out, 1);
         }
-        
+
         fclose(in);
-        
+
         /* Now copy the original */
         gdImageCopyResampled(im_out, im_in, 0, 0, 0, 0,
           gdImageSX(im_out), gdImageSY(im_out),
@@ -187,3 +173,5 @@ class FastImage
     END
   end
 end
+
+FastImage.send(:include, FastImage::Resize)

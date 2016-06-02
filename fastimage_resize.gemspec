@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "fastimage_resize/version"
+require "fastimage/resize/version"
 
 Gem::Specification.new do |s|
   s.name = "fastimage_resize"
-  s.version = FastImage::RESIZE_VERSION
+  s.version = FastImage::Resize::VERSION
   s.authors = ["Stephen Sykes"]
   s.email = ["sdsykes@gmail.com"]
 
