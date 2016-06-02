@@ -6,12 +6,12 @@ require "fastimage/resize/version"
 Gem::Specification.new do |s|
   s.name = "local-fastimage_resize"
   s.version = FastImage::Resize::VERSION
-  s.authors = ["Stephen Sykes"]
-  s.email = ["sdsykes@gmail.com"]
+  s.authors = ["Stephen Sykes", "Gregor Schmidt (Planio)"]
+  s.email = ["sdsykes@gmail.com", "gregor@plan.io", "support@plan.io"]
 
-  s.summary = "FastImage Resize - Image resizing fast and simple"
-  s.description = "FastImage Resize is an extremely light solution for resizing images in ruby by using libgd."
-  s.homepage = "http://github.com/sdsykes/fastimage_resize"
+  s.summary = "Local FastImage Resize - Image resizing fast and simple"
+  s.description = "Local FastImage Resize is an extremely light solution for resizing images in ruby by using libgd."
+  s.homepage = "http://github.com/planio-gmbh/local-fastimage_resize"
 
   s.requirements = ["libgd, see www.libgd.org"]
 
@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "RubyInline", ">= 3.8.2"
-  s.add_dependency "local-fastimage", ">= 3.0.0"
+  s.add_dependency "local-fastimage", "~> 3.0"
 
   s.add_development_dependency "bundler", "~> 1.12"
   s.add_development_dependency "rake", "~> 10.0"
