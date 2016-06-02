@@ -8,6 +8,9 @@ It features the following differences:
 * Removal of all remote image handling code
 * Minor changes to code organization
 
+[![Build
+Status](https://travis-ci.org/planio-gmbh/local-fastimage_resize.svg?branch=master)](https://travis-ci.org/planio-gmbh/local-fastimage_resize)
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -30,6 +33,19 @@ Or install it yourself as:
 
 Again, make sure to `require "fastimage/resize"`.
 
+
+### External dependencies
+
+`local-fastimage_resize`, just as `fastimage_resize`, depends on
+[libgd](http://www.libgd.org). Therefore you need to have the development
+headers installed on your system.
+
+* *Mac OS* (Homebrew): `brew install gd`
+* *Debian*: `apt-get install libgd-dev`
+* *Ubuntu*: `apt-get install libgd2-noxpm-dev`
+
+The Ubuntu package with XPM support will work just as well. It's just, that
+`fastimage_resize` will not make any use of it.
 
 
 ## Usage
