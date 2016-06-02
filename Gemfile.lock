@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    fastimage_resize (2.0.3)
+    local-fastimage_resize (2.0.3)
       RubyInline (>= 3.8.2)
-      fastimage (>= 1.2.9)
+      local-fastimage (>= 3.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -11,9 +11,7 @@ GEM
     RubyInline (3.12.4)
       ZenTest (~> 4.3)
     ZenTest (4.11.0)
-    addressable (2.4.0)
-    fastimage (2.0.0)
-      addressable (~> 2)
+    local-fastimage (3.0.0)
     minitest (5.9.0)
     rake (10.5.0)
 
@@ -22,7 +20,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.12)
-  fastimage_resize!
+  local-fastimage_resize!
   minitest (~> 5.0)
   rake (~> 10.0)
 

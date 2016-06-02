@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "fastimage/resize/version"
 
 Gem::Specification.new do |s|
-  s.name = "fastimage_resize"
+  s.name = "local-fastimage_resize"
   s.version = FastImage::Resize::VERSION
   s.authors = ["Stephen Sykes"]
   s.email = ["sdsykes@gmail.com"]
@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency "RubyInline", ">= 3.8.2"
-  s.add_dependency "fastimage", ">= 1.2.9"
+  s.add_dependency "local-fastimage", ">= 3.0.0"
 
   s.add_development_dependency "bundler", "~> 1.12"
   s.add_development_dependency "rake", "~> 10.0"
