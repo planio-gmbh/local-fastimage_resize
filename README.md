@@ -6,6 +6,7 @@ Resize](https://github.com/sdsykes/fastimage_resize) gem.
 It features the following differences:
 
 * Removal of all remote image handling code
+* Replacing RubyInline with native extension
 * Minor changes to code organization
 
 [![Build
