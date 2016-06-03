@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 
   s.license = "MIT"
 
-  s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(bin|test)/}) }
   s.require_paths = ["lib"]
 
   s.extensions = "ext/fastimage_resize/extconf.rb"
