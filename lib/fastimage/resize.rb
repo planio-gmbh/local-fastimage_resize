@@ -21,6 +21,7 @@
 
 require 'tempfile'
 require 'fastimage'
+require 'fastimage_native_resize'
 
 module FastImage::Resize
   SUPPORTED_FORMATS = [:jpeg, :png, :gif]
@@ -82,5 +83,4 @@ module FastImage::Resize
   end
 end
 
-require 'fastimage/resize/native_resize'
 FastImage.send(:include, FastImage::Resize)

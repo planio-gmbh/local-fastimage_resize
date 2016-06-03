@@ -7,7 +7,7 @@
 //     rb_funcall(rb_mKernel, sym_puts, 1, rb_funcall(v, sym_inspect, 0));
 // }
 
-static VALUE native_resize(VALUE self, VALUE rb_in, VALUE rb_out, VALUE rb_w, VALUE rb_h, VALUE rb_image_type, VALUE rb_jpeg_quality) {
+static VALUE fastimage_native_resize(VALUE self, VALUE rb_in, VALUE rb_out, VALUE rb_w, VALUE rb_h, VALUE rb_image_type, VALUE rb_jpeg_quality) {
   char *filename_in  = StringValuePtr(rb_in);
   char *filename_out = StringValuePtr(rb_out);
   int w              = NUM2INT(rb_w);
@@ -95,10 +95,10 @@ static VALUE native_resize(VALUE self, VALUE rb_in, VALUE rb_out, VALUE rb_w, VA
   return Qnil;
 }
 
-void Init_native_resize(void) {
+void Init_fastimage_native_resize(void) {
   VALUE cFastImageResize;
 
   cFastImageResize = rb_const_get(rb_cObject, rb_intern("FastImage"));
 
-  rb_define_singleton_method(cFastImageResize, "native_resize", native_resize, 6);
+  rb_define_singleton_method(cFastImageResize, "native_resize", fastimage_native_resize, 6);
 }

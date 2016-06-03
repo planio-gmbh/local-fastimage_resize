@@ -10,11 +10,7 @@ end
 
 require "rake/extensiontask"
 
-Rake::ExtensionTask.new do |ext|
-  ext.name = "native_resize"
-  ext.ext_dir = "ext/fastimage_resize"
-  ext.lib_dir = "lib/fastimage/resize"
-end
+Rake::ExtensionTask.new "fastimage_native_resize"
 
 Rake::Task[:test].prerequisites << :compile
 

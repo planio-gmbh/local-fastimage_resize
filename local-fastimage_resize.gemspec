@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(bin|test)/}) }
   s.require_paths = ["lib"]
 
-  s.extensions = "ext/fastimage_resize/extconf.rb"
+  s.extensions = "ext/fastimage_native_resize/extconf.rb"
 
   s.add_dependency "local-fastimage", "~> 3.0"
 
