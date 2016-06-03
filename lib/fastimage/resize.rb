@@ -19,7 +19,6 @@
 #
 # * http://blog.new-bamboo.co.uk/2007/12/3/super-f-simple-resizing
 
-require 'inline'
 require 'tempfile'
 require 'fastimage'
 
@@ -75,103 +74,13 @@ module FastImage::Resize
       temp_file = nil
     end
 
-    resize_image(path, file_out.to_s, width.to_i, height.to_i, type_index, jpeg_quality.to_i)
+    FastImage.native_resize(path, file_out.to_s, width.to_i, height.to_i, type_index, jpeg_quality.to_i)
 
     temp_file
   rescue RuntimeError => e
     raise ImageFetchFailure, e.message
   end
-
-  private
-
-  def resize_image(filename_in, filename_out, w, h, image_type, jpeg_quality); end
-
-  inline do |builder|
-    builder.include '"gd.h"'
-    builder.add_link_flags "-lgd"
-
-    builder.c <<-"END"
-      VALUE resize_image(char *filename_in, char *filename_out, int w, int h, int image_type, int jpeg_quality) {
-        gdImagePtr im_in, im_out;
-        FILE *in, *out;
-        int trans = 0, x = 0, y = 0, f = 0;
-
-        in = fopen(filename_in, "rb");
-        if (!in) return Qnil;
-
-        switch(image_type) {
-          case 0: im_in = gdImageCreateFromJpeg(in);
-                  break;
-          case 1: im_in = gdImageCreateFromPng(in);
-                  break;
-          case 2: im_in = gdImageCreateFromGif(in);
-                  trans = gdImageGetTransparent(im_in);
-                  /* find a transparent pixel, then turn off transparency
-                     so that it copies correctly */
-                  if (trans >= 0) {
-                    for (x=0; x<gdImageSX(im_in); x++) {
-                      for (y=0; y<gdImageSY(im_in); y++) {
-                        if (gdImageGetPixel(im_in, x, y) == trans) {
-                          f = 1;
-                          break;
-                        }
-                      }
-                      if (f) break;
-                    }
-                    gdImageColorTransparent(im_in, -1);
-                    if (!f) trans = -1;  /* no transparent pixel found */
-                  }
-                  break;
-          default: return Qnil;
-        }
-
-        if (w == 0 || h == 0) {
-          int originalWidth  = gdImageSX(im_in);
-          int originalHeight = gdImageSY(im_in);
-          if (w == 0) {
-            w = (int)(h * originalWidth / originalHeight);
-          } else {
-            h = (int)(w * originalHeight / originalWidth);
-          }
-        }
-
-        im_out = gdImageCreateTrueColor(w, h);  /* must be truecolor */
-
-        if (image_type == 1) {
-          gdImageAlphaBlending(im_out, 0);  /* handle transparency correctly */
-          gdImageSaveAlpha(im_out, 1);
-        }
-
-        fclose(in);
-
-        /* Now copy the original */
-        gdImageCopyResampled(im_out, im_in, 0, 0, 0, 0,
-          gdImageSX(im_out), gdImageSY(im_out),
-          gdImageSX(im_in), gdImageSY(im_in));
-
-        out = fopen(filename_out, "wb");
-        if (out) {
-          switch(image_type) {
-            case 0: gdImageJpeg(im_out, out, jpeg_quality);
-                    break;
-            case 1: gdImagePng(im_out, out);
-                    break;
-            case 2: gdImageTrueColorToPalette(im_out, 0, 256);
-                    if (trans >= 0) {
-                      trans = gdImageGetPixel(im_out, x, y);  /* get the color index of our transparent pixel */
-                      gdImageColorTransparent(im_out, trans); /* may not always work as hoped */
-                    }
-                    gdImageGif(im_out, out);
-                    break;
-          }
-          fclose(out);
-        }
-        gdImageDestroy(im_in);
-        gdImageDestroy(im_out);
-        return Qnil;
-      }
-    END
-  end
 end
 
+require 'fastimage/resize/native_resize'
 FastImage.send(:include, FastImage::Resize)

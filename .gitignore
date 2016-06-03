@@ -1,2 +1,5 @@
 /Gemfile.lock
 /pkg/
+/tmp/
+/lib/fastimage/resize/native_resize.bundle
+/lib/fastimage/resize/native_resize.so
