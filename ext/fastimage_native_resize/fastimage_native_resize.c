@@ -46,7 +46,9 @@ static VALUE fastimage_native_resize(VALUE self, VALUE rb_in, VALUE rb_out, VALU
               if (!f) trans = -1;  /* no transparent pixel found */
             }
             break;
-    default: return Qnil;
+    default: fclose(in);
+             return Qnil;
+
   }
 
   if (w == 0 || h == 0) {
@@ -64,9 +66,10 @@ static VALUE fastimage_native_resize(VALUE self, VALUE rb_in, VALUE rb_out, VALU
   if (image_type == 1) {
     gdImageAlphaBlending(im_out, 0);  /* handle transparency correctly */
     gdImageSaveAlpha(im_out, 1);
+  } else {
+    fclose(in);
+    return Qnil;
   }
-
-  fclose(in);
 
   /* Now copy the original */
   gdImageCopyResampled(im_out, im_in, 0, 0, 0, 0,
