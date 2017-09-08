@@ -79,7 +79,7 @@ module FastImage::Resize
 
     temp_file
   rescue RuntimeError => e
-    raise ImageFetchFailure, e.message
+    raise FastImage::ImageFetchFailure, e.message
   end
 end
 
