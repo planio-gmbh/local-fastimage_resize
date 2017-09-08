@@ -46,9 +46,11 @@ static VALUE fastimage_native_resize(VALUE self, VALUE rb_in, VALUE rb_out, VALU
               if (!f) trans = -1;  /* no transparent pixel found */
             }
             break;
-    default: fclose(in);
-             return Qnil;
+  }
 
+  if (!im_in) {
+    fclose(in);
+    return Qnil;
   }
 
   if (w == 0 || h == 0) {
@@ -62,10 +64,12 @@ static VALUE fastimage_native_resize(VALUE self, VALUE rb_in, VALUE rb_out, VALU
   }
 
   im_out = gdImageCreateTrueColor(w, h);  /* must be truecolor */
-
-  if (image_type == 1) {
-    gdImageAlphaBlending(im_out, 0);  /* handle transparency correctly */
-    gdImageSaveAlpha(im_out, 1);
+  if (im_out) {
+    if (image_type == 1) {
+      gdImageAlphaBlending(im_out, 0);  /* handle transparency correctly */
+      gdImageSaveAlpha(im_out, 1);
+    }
+    fclose(in);
   } else {
     fclose(in);
     return Qnil;
