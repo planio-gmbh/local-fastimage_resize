@@ -29,15 +29,15 @@ h2. Examples
 <code>
   require 'fastimage_resize'
 
-  FastImage.resize("example.gif", 100, 20, :outfile=>"my.gif")
+  FastImage.resize("example.gif", 100, 20, outfile: "my.gif")
   => nil
 
   outfile = FastImage.resize("nonexistentfile.png", 50, 50)
-  =>FastImage::ImageFetchFailure: FastImage::ImageFetchFailure
+  => FastImage::ImageFetchFailure: FastImage::ImageFetchFailure
 
   outfile = FastImage.resize("afile.png", 50, 150)
   => #<File:/var/folders/vm/vd65y2597xl_by6c73_m9j1h0000gn/T/FastImage20111003-7638-x3l8r7-0.png>
-  
+
   File.open("afile.png", "r") {|f| FastImage.resize(f, 100, 100)}
   => #<File:/var/folders/vm/vd65y2597xl_by6c73_m9j1h0000gn/T/FastImage20111003-7638-y1ofh-0.png>
 </code>

@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+#
 # FastImage Resize is an extremely light solution for resizing images in ruby by using libgd
 #
 # === Examples
 #
 #   require 'fastimage_resize'
 #
-#   FastImage.resize("image.gif", 100, 20, :outfile=>"thumbnail.gif")
+#   FastImage.resize("image.gif", 100, 20, outfile: "thumbnail.gif")
 #   => 1
 #
 # === Requirements
@@ -47,7 +49,7 @@ module FastImage::Resize
     #
     #   require 'fastimage_resize'
     #
-    #   FastImage.resize("http://stephensykes.com/images/ss.com_x.gif", 100, 20, :outfile=>"my.gif")
+    #   FastImage.resize("http://stephensykes.com/images/ss.com_x.gif", 100, 20, outfile: "my.gif")
     #
     # === Supported options
     # [:jpeg_quality]
@@ -56,7 +58,7 @@ module FastImage::Resize
     #   Name of a file to store the output in, in this case a temp file is not used
     #
     def resize(source, width, height, options={})
-      new(source, :raise_on_failure => true).resize(width, height, options)
+      new(source, raise_on_failure: true).resize(width, height, options)
     end
   end
 

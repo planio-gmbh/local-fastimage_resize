@@ -14,4 +14,4 @@ Rake::ExtensionTask.new "fastimage_native_resize"
 
 Rake::Task[:test].prerequisites << :compile
 
-task :default => :test
+task default: :test

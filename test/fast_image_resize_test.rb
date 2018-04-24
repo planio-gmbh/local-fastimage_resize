@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class FastImageResizeTest < Minitest::Test
@@ -6,9 +8,9 @@ class FastImageResizeTest < Minitest::Test
   FixturePath = File.join(PathHere, "fixtures")
 
   GoodFixtures = {
-    "test.gif"=>[:gif, [17, 32]],
-    "test.jpg"=>[:jpeg, [882, 470]],
-    "test.png"=>[:png, [30, 20]]
+    "test.gif" => [:gif, [17, 32]],
+    "test.jpg" => [:jpeg, [882, 470]],
+    "test.png" => [:png, [30, 20]]
     }
 
   BadFixtures = [
@@ -20,7 +22,7 @@ class FastImageResizeTest < Minitest::Test
   def test_resize_image_types_from_files
     GoodFixtures.each do |fn, info|
       outfile = File.join(PathHere, "fixtures", "resized_" + fn)
-      FastImage.resize(File.join(FixturePath, fn), info[1][0] / 3, info[1][1] / 2, :outfile=>outfile)
+      FastImage.resize(File.join(FixturePath, fn), info[1][0] / 3, info[1][1] / 2, outfile: outfile)
       assert_equal [info[1][0] / 3, info[1][1] / 2], FastImage.size(outfile)
       File.unlink outfile
     end
@@ -30,7 +32,7 @@ class FastImageResizeTest < Minitest::Test
     GoodFixtures.each do |fn, info|
       outfile = File.join(PathHere, "fixtures", "resized_" + fn)
       File.open(File.join(FixturePath, fn)) do |io|
-        FastImage.resize(io, info[1][0] / 3, info[1][1] / 2, :outfile=>outfile)
+        FastImage.resize(io, info[1][0] / 3, info[1][1] / 2, outfile: outfile)
         assert_equal [info[1][0] / 3, info[1][1] / 2], FastImage.size(outfile)
         File.unlink outfile
       end
@@ -50,7 +52,7 @@ class FastImageResizeTest < Minitest::Test
     fn = BadFixtures[0]
     outfile = File.join(PathHere, "fixtures", "resized_" + fn)
     assert_raises(FastImage::FormatNotSupported) do
-      FastImage.resize(File.join(FixturePath, fn), 20, 20, :outfile=>outfile)
+      FastImage.resize(File.join(FixturePath, fn), 20, 20, outfile: outfile)
     end
   end
 
@@ -58,7 +60,7 @@ class FastImageResizeTest < Minitest::Test
     fn = BadFixtures[1]
     outfile = File.join(PathHere, "fixtures", "resized_" + fn)
     assert_raises(FastImage::SizeNotFound) do
-      FastImage.resize(File.join(FixturePath, fn), 20, 20, :outfile=>outfile)
+      FastImage.resize(File.join(FixturePath, fn), 20, 20, outfile: outfile)
     end
   end
 
@@ -66,24 +68,24 @@ class FastImageResizeTest < Minitest::Test
     fn = BadFixtures[2]
     outfile = File.join(PathHere, "fixtures", "resized_" + fn)
     assert_raises(FastImage::FormatNotSupported) do
-      FastImage.resize(File.join(FixturePath, fn), 20, 20, :outfile=>outfile)
+      FastImage.resize(File.join(FixturePath, fn), 20, 20, outfile: outfile)
     end
   end
 
   def test_should_resize_names_with_spaces
     outfile = File.join(PathHere, "fixtures", "resized_test with space.jpg")
-    FastImage.resize(File.join(FixturePath, "test with space.jpg"), 10, 10, :outfile=>outfile)
+    FastImage.resize(File.join(FixturePath, "test with space.jpg"), 10, 10, outfile: outfile)
     assert File.exist?(outfile)
     File.unlink outfile
   end
 
   def test_resized_jpg_is_reasonable_size_for_quality
     outfile = File.join(PathHere, "fixtures", "resized_test.jpg")
-    FastImage.resize(File.join(FixturePath, "test.jpg"), 200, 200, :outfile=>outfile)
+    FastImage.resize(File.join(FixturePath, "test.jpg"), 200, 200, outfile: outfile)
     size = File.size(outfile)
     assert size < 30000
     assert size > 10000
-    FastImage.resize(File.join(FixturePath, "test.jpg"), 200, 200, :outfile=>outfile, :jpeg_quality=>5)
+    FastImage.resize(File.join(FixturePath, "test.jpg"), 200, 200, outfile: outfile, jpeg_quality: 5)
     size = File.size(outfile)
     assert size < 3500
     assert size > 1500
