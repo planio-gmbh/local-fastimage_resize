@@ -134,13 +134,24 @@ class FastImageResizeTest < Minitest::Test
     end
   end
 
-  def test_preserves_orientation
+  def test_preserves_orientation_when_scaling
     OrientationFixtures.each do |fn|
       outfile = FastImage.resize(fn, 240, 0)
       fi = FastImage.new(outfile)
 
       assert_equal [480, 640], FastImage.size(fn), 'Orientation read improperly from source'
       assert_equal [240, 320], fi.size,            'Orientation applied improperly to target'
+      assert_equal 1, fi.orientation,              'Orientation meta data stored improperly to target'
+    end
+  end
+
+  def test_preserves_orientation_without_scaling
+    OrientationFixtures.each do |fn|
+      outfile = FastImage.resize(fn, 0, 0)
+      fi = FastImage.new(outfile)
+
+      assert_equal [480, 640], FastImage.size(fn), 'Orientation read improperly from source'
+      assert_equal [480, 640], fi.size,            'Orientation applied improperly to target'
       assert_equal 1, fi.orientation,              'Orientation meta data stored improperly to target'
     end
   end

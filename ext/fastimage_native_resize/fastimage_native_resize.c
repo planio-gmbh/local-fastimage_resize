@@ -85,10 +85,13 @@ static VALUE fastimage_native_resize(
   if (w == 0 || h == 0) {
     int originalWidth  = gdImageSX(im_in);
     int originalHeight = gdImageSY(im_in);
-    if (w == 0) {
+    if (h != 0) {
       w = (int)(h * originalWidth / originalHeight);
-    } else {
+    } else if (w != 0) {
       h = (int)(w * originalHeight / originalWidth);
+    } else {
+      w = originalWidth;
+      h = originalHeight;
     }
   }
 
