@@ -1,3 +1,16 @@
+# 3.3.0 - 2018-04-24
+
+Support for Exif orientation.
+
+Images are rotated and flipped automatically based on Exif data, so that the
+generated thumbnails follow the specified orientation.
+
+Support for easy non-scaling operation
+
+By providing `0` for both width and height, the image will not be scaled but
+merely re-encoded to the target location. This may be useful in combination with
+the above mentioned automatic Exif orientation handling,
+
 # 3.2.0 - 2017-09-08
 
 Check for some error cases in gd calls which might have resulted in null-pointer exceptions and subsequent segfaults.
