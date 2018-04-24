@@ -73,7 +73,7 @@ class FastImageResizeTest < Minitest::Test
   def test_should_resize_names_with_spaces
     outfile = File.join(PathHere, "fixtures", "resized_test with space.jpg")
     FastImage.resize(File.join(FixturePath, "test with space.jpg"), 10, 10, :outfile=>outfile)
-    assert File.exists?(outfile)
+    assert File.exist?(outfile)
     File.unlink outfile
   end
 
