@@ -19,6 +19,8 @@ class FastImageResizeTest < Minitest::Test
     "test.ico"
   ]
 
+  OrientationFixtures = Dir[File.join(FixturePath, 'orientation', '*.jpg')]
+
   def test_resize_image_types_from_files
     GoodFixtures.each do |fn, info|
       outfile = File.join(PathHere, "fixtures", "resized_" + fn)
@@ -120,6 +122,17 @@ class FastImageResizeTest < Minitest::Test
         newHeight = (halfWidth * info[1][1] / info[1][0]).round
         assert_equal [halfWidth, newHeight], FastImage.size(outfile)
       end
+    end
+  end
+
+  def test_preserves_orientation
+    OrientationFixtures.each do |fn|
+      outfile = FastImage.resize(fn, 240, 0)
+      fi = FastImage.new(outfile)
+
+      assert_equal [480, 640], FastImage.size(fn), 'Orientation read improperly from source'
+      assert_equal [240, 320], fi.size,            'Orientation applied improperly to target'
+      assert_equal 1, fi.orientation,              'Orientation meta data stored improperly to target'
     end
   end
 end

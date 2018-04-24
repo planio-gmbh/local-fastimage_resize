@@ -1,19 +1,21 @@
 #include <ruby.h>
 #include <gd.h>
 
-// static void d(VALUE v) {
-//     ID sym_puts = rb_intern("puts");
-//     ID sym_inspect = rb_intern("inspect");
-//     rb_funcall(rb_mKernel, sym_puts, 1, rb_funcall(v, sym_inspect, 0));
-// }
-
-static VALUE fastimage_native_resize(VALUE self, VALUE rb_in, VALUE rb_out, VALUE rb_w, VALUE rb_h, VALUE rb_image_type, VALUE rb_jpeg_quality) {
+static VALUE fastimage_native_resize(
+        VALUE self,
+        VALUE rb_in, VALUE rb_out,
+        VALUE rb_w, VALUE rb_h,
+        VALUE rb_image_type,
+        VALUE rb_jpeg_quality,
+        VALUE rb_orientation
+       ) {
   char *filename_in  = StringValuePtr(rb_in);
   char *filename_out = StringValuePtr(rb_out);
   int w              = NUM2INT(rb_w);
   int h              = NUM2INT(rb_h);
   int image_type     = NUM2INT(rb_image_type);
   int jpeg_quality   = NUM2INT(rb_jpeg_quality);
+  int orientation    = NUM2INT(rb_orientation);
 
 
   gdImagePtr im_in, im_out;
@@ -53,6 +55,33 @@ static VALUE fastimage_native_resize(VALUE self, VALUE rb_in, VALUE rb_out, VALU
     return Qnil;
   }
 
+
+
+  /*  Handle orientation */
+  if (orientation == 5 || orientation == 6) {
+    im_in = gdImageRotateInterpolated(im_in, 270.0, 0);
+  }
+  if (orientation == 7 || orientation == 8) {
+    im_in = gdImageRotateInterpolated(im_in, 90.0, 0);
+  }
+  if (!im_in) {
+    fclose(in);
+    return Qnil;
+  }
+
+  if (orientation == 2 || orientation == 5 || orientation == 7) {
+    gdImageFlipHorizontal(im_in);
+  }
+  if (orientation == 3) {
+      gdImageFlipBoth(im_in);
+  }
+  if (orientation == 4) {
+    gdImageFlipVertical(im_in);
+  }
+
+
+
+  /* Compute target size */
   if (w == 0 || h == 0) {
     int originalWidth  = gdImageSX(im_in);
     int originalHeight = gdImageSY(im_in);
@@ -62,6 +91,8 @@ static VALUE fastimage_native_resize(VALUE self, VALUE rb_in, VALUE rb_out, VALU
       h = (int)(w * originalHeight / originalWidth);
     }
   }
+
+
 
   im_out = gdImageCreateTrueColor(w, h);  /* must be truecolor */
   if (im_out) {
@@ -107,5 +138,5 @@ void Init_fastimage_native_resize(void) {
 
   cFastImageResize = rb_const_get(rb_cObject, rb_intern("FastImage"));
 
-  rb_define_singleton_method(cFastImageResize, "native_resize", fastimage_native_resize, 6);
+  rb_define_singleton_method(cFastImageResize, "native_resize", fastimage_native_resize, 7);
 }
