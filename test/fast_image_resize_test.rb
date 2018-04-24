@@ -125,6 +125,15 @@ class FastImageResizeTest < Minitest::Test
     end
   end
 
+  def test_keeps_size_if_height_and_width_are_zero
+    GoodFixtures.each do |fn, info|
+      File.open(File.join(FixturePath, fn)) do |io|
+        outfile = FastImage.resize(io, 0, 0)
+        assert_equal info[1], FastImage.size(outfile)
+      end
+    end
+  end
+
   def test_preserves_orientation
     OrientationFixtures.each do |fn|
       outfile = FastImage.resize(fn, 240, 0)
