@@ -24,8 +24,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency "local-fastimage", "~> 3.0"
 
-  s.add_development_dependency "bundler", "~> 1.12"
-  s.add_development_dependency "rake", "~> 10.0"
-  s.add_development_dependency "minitest", "~> 5.0"
-  s.add_development_dependency "rake-compiler", "~> 0.9.9"
+  s.add_development_dependency "bundler"
+  s.add_development_dependency "rake"
+  s.add_development_dependency "minitest"
+  s.add_development_dependency "rake-compiler"
 end
