@@ -10,7 +10,8 @@ class FastImageResizeTest < Minitest::Test
   GoodFixtures = {
     "test.gif" => [:gif, [17, 32]],
     "test.jpg" => [:jpeg, [882, 470]],
-    "test.png" => [:png, [30, 20]]
+    "test.png" => [:png, [30, 20]],
+    "test.tif" => [:tiff, [2464, 3248]]
     }
 
   BadFixtures = [

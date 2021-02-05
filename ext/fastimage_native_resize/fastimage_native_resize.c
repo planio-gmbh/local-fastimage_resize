@@ -48,6 +48,8 @@ static VALUE fastimage_native_resize(
               if (!f) trans = -1;  /* no transparent pixel found */
             }
             break;
+    case 3: im_in = gdImageCreateFromTiff(in);
+            break;
   }
 
   if (!im_in) {
@@ -127,6 +129,8 @@ static VALUE fastimage_native_resize(
                 gdImageColorTransparent(im_out, trans); /* may not always work as hoped */
               }
               gdImageGif(im_out, out);
+              break;
+      case 3: gdImagePng(im_out, out);
               break;
     }
     fclose(out);

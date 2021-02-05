@@ -26,8 +26,8 @@ require 'fastimage'
 require 'fastimage_native_resize'
 
 module FastImage::Resize
-  SUPPORTED_FORMATS = [:jpeg, :png, :gif]
-  FILE_EXTENSIONS = [:jpg, :png, :gif]  # prefer jpg to jpeg as an extension
+  SUPPORTED_FORMATS = [:jpeg, :png, :gif, :tiff]
+  FILE_EXTENSIONS = [:jpg, :png, :gif, :tiff]  # prefer jpg to jpeg as an extension
 
   class FormatNotSupported < FastImage::FastImageException # :nodoc:
   end
