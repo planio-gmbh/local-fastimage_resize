@@ -1,3 +1,8 @@
+# 3.4.0 - 2021-02-10
+
+Support for resizing TIFF images. Output of such an operation is always a PNG
+image.
+
 # 3.3.0 - 2018-04-24
 
 Support for Exif orientation.
