@@ -79,7 +79,7 @@ module FastImage::Resize
 
     FastImage.native_resize(path, file_out.to_s, width.to_i, height.to_i, type_index, jpeg_quality.to_i, orientation)
 
-    raise FastImage::ImageFetchFailure, 'Image could be created' unless File.exist?(file_out.to_s)
+    raise FastImage::ImageFetchFailure, 'Image could not be created' unless File.exist?(file_out.to_s)
 
     temp_file
   rescue RuntimeError => e
