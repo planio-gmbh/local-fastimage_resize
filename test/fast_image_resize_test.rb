@@ -17,7 +17,8 @@ class FastImageResizeTest < Minitest::Test
   BadFixtures = [
     "test.bmp",
     "faulty.jpg",
-    "test.ico"
+    "test.ico",
+    "bad.gif"
   ]
 
   OrientationFixtures = Dir[File.join(FixturePath, 'orientation', '*.jpg')]
@@ -63,6 +64,14 @@ class FastImageResizeTest < Minitest::Test
     fn = BadFixtures[1]
     outfile = File.join(PathHere, "fixtures", "resized_" + fn)
     assert_raises(FastImage::SizeNotFound) do
+      FastImage.resize(File.join(FixturePath, fn), 20, 20, outfile: outfile)
+    end
+  end
+
+  def test_should_not_segfault_on_faulty_gif
+    fn = BadFixtures[3]
+    outfile = File.join(PathHere, "fixtures", "resized_" + fn)
+    assert_raises(FastImage::ImageProcessingError) do
       FastImage.resize(File.join(FixturePath, fn), 20, 20, outfile: outfile)
     end
   end

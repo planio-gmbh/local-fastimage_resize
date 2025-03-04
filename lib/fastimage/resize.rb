@@ -31,6 +31,9 @@ module FastImage::Resize
 
   class FormatNotSupported < FastImage::FastImageException # :nodoc:
   end
+  
+  class ImageProcessingError < FastImage::FastImageException # :nodoc:
+  end
 
   def self.included(base)
     base.extend ClassMethods
@@ -83,7 +86,7 @@ module FastImage::Resize
 
     temp_file
   rescue RuntimeError => e
-    raise FastImage::ImageFetchFailure, e.message
+    raise FastImage::Resize::ImageProcessingError, e.message
   end
 end
 
