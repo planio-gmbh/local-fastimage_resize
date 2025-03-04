@@ -23,7 +23,9 @@ static VALUE fastimage_native_resize(
   int trans = 0, x = 0, y = 0, f = 0;
 
   in = fopen(filename_in, "rb");
-  if (!in) return Qnil;
+  if (!in) {
+    rb_raise(rb_eIOError, "Could not open input file: %s", filename_in);
+  }
 
   switch(image_type) {
     case 0: im_in = gdImageCreateFromJpeg(in);
@@ -52,6 +54,9 @@ static VALUE fastimage_native_resize(
             break;
     case 3: im_in = gdImageCreateFromTiff(in);
             break;
+    default:
+            fclose(in);
+            rb_raise(rb_eArgError, "Unsupported image type: %d", image_type);
   }
 
   if (!im_in) {
