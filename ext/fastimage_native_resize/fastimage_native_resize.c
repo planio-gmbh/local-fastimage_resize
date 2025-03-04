@@ -59,8 +59,8 @@ static VALUE fastimage_native_resize(
             rb_raise(rb_eArgError, "Unsupported image type: %d", image_type);
   }
 
+  fclose(in);
   if (!im_in) {
-    fclose(in);
     rb_raise(rb_eRuntimeError, "Failed to read image data from: %s", filename_in);
   }
 
@@ -68,21 +68,27 @@ static VALUE fastimage_native_resize(
 
   /*  Handle orientation */
   if (orientation == 5 || orientation == 6) {
-    im_in = gdImageRotateInterpolated(im_in, 270.0, 0);
+    gdImagePtr rotated = gdImageRotateInterpolated(im_in, 270.0, 0);
+    gdImageDestroy(im_in);
+    if (!rotated) {
+      rb_raise(rb_eRuntimeError, "Failed to rotate image (orientation %d)", orientation);
+    }
+    im_in = rotated;
   }
   if (orientation == 7 || orientation == 8) {
-    im_in = gdImageRotateInterpolated(im_in, 90.0, 0);
-  }
-  if (!im_in) {
-    fclose(in);
-    return Qnil;
+    gdImagePtr rotated = gdImageRotateInterpolated(im_in, 90.0, 0);
+    gdImageDestroy(im_in);
+    if (!rotated) {
+      rb_raise(rb_eRuntimeError, "Failed to rotate image (orientation %d)", orientation);
+    }
+    im_in = rotated;
   }
 
   if (orientation == 2 || orientation == 5 || orientation == 7) {
     gdImageFlipHorizontal(im_in);
   }
   if (orientation == 3) {
-      gdImageFlipBoth(im_in);
+    gdImageFlipBoth(im_in);
   }
   if (orientation == 4) {
     gdImageFlipVertical(im_in);
@@ -107,15 +113,14 @@ static VALUE fastimage_native_resize(
 
 
   im_out = gdImageCreateTrueColor(w, h);  /* must be truecolor */
-  if (im_out) {
-    if (image_type == 1) {
-      gdImageAlphaBlending(im_out, 0);  /* handle transparency correctly */
-      gdImageSaveAlpha(im_out, 1);
-    }
-    fclose(in);
-  } else {
-    fclose(in);
-    return Qnil;
+  if (!im_out) {
+    gdImageDestroy(im_in);
+    rb_raise(rb_eRuntimeError, "Failed to create output image buffer");
+  }
+  
+  if (image_type == 1) {
+    gdImageAlphaBlending(im_out, 0);  /* handle transparency correctly */
+    gdImageSaveAlpha(im_out, 1);
   }
 
   /* Now copy the original */
@@ -124,7 +129,11 @@ static VALUE fastimage_native_resize(
     gdImageSX(im_in), gdImageSY(im_in));
 
   out = fopen(filename_out, "wb");
-  if (out) {
+  if (!out) {
+    gdImageDestroy(im_in);
+    gdImageDestroy(im_out);
+    rb_raise(rb_eIOError, "Could not open output file: %s", filename_out);
+  }
     switch(image_type) {
       case 0: gdImageJpeg(im_out, out, jpeg_quality);
               break;
@@ -141,7 +150,7 @@ static VALUE fastimage_native_resize(
               break;
     }
     fclose(out);
-  }
+  
   gdImageDestroy(im_in);
   gdImageDestroy(im_out);
   return Qnil;
