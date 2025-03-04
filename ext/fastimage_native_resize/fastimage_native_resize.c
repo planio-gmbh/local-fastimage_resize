@@ -31,21 +31,23 @@ static VALUE fastimage_native_resize(
     case 1: im_in = gdImageCreateFromPng(in);
             break;
     case 2: im_in = gdImageCreateFromGif(in);
-            trans = gdImageGetTransparent(im_in);
-            /* find a transparent pixel, then turn off transparency
-               so that it copies correctly */
-            if (trans >= 0) {
-              for (x=0; x<gdImageSX(im_in); x++) {
-                for (y=0; y<gdImageSY(im_in); y++) {
-                  if (gdImageGetPixel(im_in, x, y) == trans) {
-                    f = 1;
-                    break;
+            if (im_in) {
+              trans = gdImageGetTransparent(im_in);
+              /* find a transparent pixel, then turn off transparency
+                 so that it copies correctly */
+              if (trans >= 0) {
+                for (x=0; x<gdImageSX(im_in); x++) {
+                  for (y=0; y<gdImageSY(im_in); y++) {
+                    if (gdImageGetPixel(im_in, x, y) == trans) {
+                      f = 1;
+                      break;
+                    }
                   }
+                  if (f) break;
                 }
-                if (f) break;
+                gdImageColorTransparent(im_in, -1);
+                if (!f) trans = -1;  /* no transparent pixel found */
               }
-              gdImageColorTransparent(im_in, -1);
-              if (!f) trans = -1;  /* no transparent pixel found */
             }
             break;
     case 3: im_in = gdImageCreateFromTiff(in);
@@ -54,7 +56,7 @@ static VALUE fastimage_native_resize(
 
   if (!im_in) {
     fclose(in);
-    return Qnil;
+    rb_raise(rb_eRuntimeError, "Failed to read image data from: %s", filename_in);
   }
 
 
