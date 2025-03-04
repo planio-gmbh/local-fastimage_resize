@@ -1,3 +1,10 @@
+# 3.4.1 - 2025-03-04
+
+Improved error handling and memory management to fix segmentation faults that
+could occur with malformed images.
+
+Introduced a new `FastImage::Resize::ImageProcessingError` exception class
+
 # 3.4.0 - 2021-02-10
 
 Support for resizing TIFF images. Output of such an operation is always a PNG
