@@ -1,4 +1,4 @@
-# Local FastImage Resize
+# Local FastImage Resize  ![Build Status](https://github.com/planio-gmbh/local-fastimage_resize/actions/workflows/run_tests.yml/badge.svg)
 
 This is a fork of the [FastImage
 Resize](https://github.com/sdsykes/fastimage_resize) gem.
@@ -9,9 +9,6 @@ It features the following differences:
 * Replacing RubyInline with native extension
 * Support for Exif orientation
 * Minor changes to code organization
-
-[![Build
-Status](https://travis-ci.org/planio-gmbh/local-fastimage_resize.svg?branch=master)](https://travis-ci.org/planio-gmbh/local-fastimage_resize)
 
 ## Installation
 
