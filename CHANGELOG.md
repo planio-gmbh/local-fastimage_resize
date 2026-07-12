@@ -1,3 +1,8 @@
+# 3.5.0 - 2026-07-13
+
+Support for resizing WebP images. The generated thumbnail is a WebP image,
+preserving transparency.
+
 # 3.4.1 - 2025-03-04
 
 Improved error handling and memory management to fix segmentation faults that
