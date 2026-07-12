@@ -11,7 +11,8 @@ class FastImageResizeTest < Minitest::Test
     "test.gif" => [:gif, [17, 32]],
     "test.jpg" => [:jpeg, [882, 470]],
     "test.png" => [:png, [30, 20]],
-    "test.tif" => [:tiff, [882, 470]]
+    "test.tif" => [:tiff, [882, 470]],
+    "test.webp" => [:webp, [60, 40]]
     }
 
   BadFixtures = [
@@ -30,6 +31,14 @@ class FastImageResizeTest < Minitest::Test
       assert_equal [info[1][0] / 3, info[1][1] / 2], FastImage.size(outfile)
       File.unlink outfile
     end
+  end
+
+  def test_resize_webp_stays_webp
+    outfile = File.join(PathHere, "fixtures", "resized_test.webp")
+    FastImage.resize(File.join(FixturePath, "test.webp"), 20, 20, outfile: outfile)
+    assert_equal [20, 20], FastImage.size(outfile)
+    assert_equal :webp, FastImage.type(outfile)
+    File.unlink outfile
   end
 
   def test_resize_image_types_from_io_objects
@@ -111,6 +120,8 @@ class FastImageResizeTest < Minitest::Test
     assert outfile.path =~ /\.gif$/
     outfile = FastImage.resize(File.join(FixturePath, "test.png"), 200, 200)
     assert outfile.path =~ /\.png$/
+    outfile = FastImage.resize(File.join(FixturePath, "test.webp"), 200, 200)
+    assert outfile.path =~ /\.webp$/
   end
 
   def test_zero_width_scales_proportionately

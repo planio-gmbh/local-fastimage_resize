@@ -54,6 +54,8 @@ static VALUE fastimage_native_resize(
             break;
     case 3: im_in = gdImageCreateFromTiff(in);
             break;
+    case 4: im_in = gdImageCreateFromWebp(in);
+            break;
     default:
             fclose(in);
             rb_raise(rb_eArgError, "Unsupported image type: %d", image_type);
@@ -118,7 +120,7 @@ static VALUE fastimage_native_resize(
     rb_raise(rb_eRuntimeError, "Failed to create output image buffer");
   }
   
-  if (image_type == 1) {
+  if (image_type == 1 || image_type == 4) {
     gdImageAlphaBlending(im_out, 0);  /* handle transparency correctly */
     gdImageSaveAlpha(im_out, 1);
   }
@@ -147,6 +149,8 @@ static VALUE fastimage_native_resize(
               gdImageGif(im_out, out);
               break;
       case 3: gdImagePng(im_out, out);
+              break;
+      case 4: gdImageWebp(im_out, out);
               break;
     }
     fclose(out);
