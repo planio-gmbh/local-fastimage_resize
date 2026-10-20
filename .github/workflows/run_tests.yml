@@ -11,18 +11,30 @@ jobs:
 
     runs-on: ubuntu-24.04
 
+    # Debian images match the libgd our servers run. Ubuntu's libgd fails to
+    # read TIFF images with libtiff >= 4.5.1.
+    container: ruby:${{ matrix.image }}
+
     strategy:
       matrix:
-        ruby-version: ['3.4', '3.3', '3.1', '2.7']
+        image: ['3.4-trixie', '3.3-trixie', '3.1-bookworm', '2.7-bullseye']
 
     steps:
       - uses: actions/checkout@v7
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get -y install libgd-dev
-      - name: Set up Ruby ${{ matrix.ruby-version }}
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby-version }}
-          bundler-cache: true
+        run: |
+          # releases past their end of life are only available from archive.debian.org
+          if ! (apt-get update && apt-get -y install libgd-dev); then
+            . /etc/os-release
+            cat > /etc/apt/sources.list <<EOF
+          deb http://archive.debian.org/debian $VERSION_CODENAME main
+          deb http://archive.debian.org/debian-security $VERSION_CODENAME-security main
+          EOF
+            rm -f /etc/apt/sources.list.d/*
+            apt-get update
+            apt-get -y install libgd-dev
+          fi
+      - name: Install Ruby dependencies
+        run: bundle install
       - name: Run tests
         run: bundle exec rake
